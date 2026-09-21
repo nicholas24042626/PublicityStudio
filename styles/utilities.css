@@ -35,3 +35,5 @@
 .standalone-app .save-draft,
 .standalone-app [data-save] { display: none !important; }
 .standalone-app .create-head { justify-content: flex-start; }
+.standalone-app .upload-grid { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 650px) { .standalone-app .upload-grid { grid-template-columns: 1fr; } }

@@ -55,7 +55,7 @@ try {
                 $reader = [System.IO.StreamReader]::new($context.Request.InputStream, $context.Request.ContentEncoding)
                 $requestData = $reader.ReadToEnd() | ConvertFrom-Json
                 $reader.Close()
-                $languageCodes = @{ Chinese = 'zh-CN'; Malay = 'ms-MY'; Tamil = 'ta-IN' }
+                $languageCodes = @{ Chinese = 'zh-CN' }
                 $targetCode = $languageCodes[$requestData.language]
                 if ([string]::IsNullOrWhiteSpace($targetCode)) { throw 'Unsupported language.' }
                 $translations = @{}

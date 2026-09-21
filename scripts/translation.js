@@ -2,50 +2,14 @@
 
 let translationTimer;
 
-function scheduleTranslations() {
-  clearTimeout(translationTimer);
-  translationTimer = setTimeout(() => {
-    syncForm();
-    (info.languages || []).filter(language => language !== 'English').forEach(language => autoTranslate(language, true));
-  }, 900);
-}
+function scheduleTranslations(){clearTimeout(translationTimer);translationTimer=setTimeout(()=>{syncForm();if((info.languages||[]).includes('Chinese'))autoTranslate('Chinese',true)},900)}
+function translationStatus(message){const card=document.querySelector('[name="translation:Chinese:title"]')?.closest('.translation-card');const status=card?.querySelector(':scope > div > span');if(status)status.textContent=message}
+function updateTranslationCard(translations){Object.entries(translations).forEach(([field,value])=>{const input=document.querySelector(`[name="translation:Chinese:${field}"]`);if(input)input.value=value||''});translationStatus('Auto translated')}
 
-function updateTranslationCard(language, translations) {
-  Object.entries(translations).forEach(([field, value]) => {
-    const input = document.querySelector(`[name="translation:${language}:${field}"]`);
-    if (input) input.value = value || '';
-  });
-  const card = document.querySelector(`[name="translation:${language}:title"]`)?.closest('.translation-card');
-  const status = card?.querySelector(':scope > div > span');
-  if (status) status.textContent = 'Auto translated';
-}
+function splitForTranslation(text,maximum=430){const parts=[];let remaining=(text||'').trim();while(new TextEncoder().encode(remaining).length>maximum){let cut=Math.min(remaining.length,maximum);while(cut>1&&new TextEncoder().encode(remaining.slice(0,cut)).length>maximum)cut--;const candidate=remaining.slice(0,cut),sentence=Math.max(candidate.lastIndexOf('. '),candidate.lastIndexOf('! '),candidate.lastIndexOf('? '));if(sentence>80)cut=sentence+1;else if(candidate.lastIndexOf(' ')>40)cut=candidate.lastIndexOf(' ');parts.push(remaining.slice(0,cut).trim());remaining=remaining.slice(cut).trim()}if(remaining)parts.push(remaining);return parts}
 
-function setTranslationStatus(language, message) {
-  const card = document.querySelector(`[name="translation:${language}:title"]`)?.closest('.translation-card');
-  const status = card?.querySelector(':scope > div > span');
-  if (status) status.textContent = message;
-}
+async function translateDirect(text){if(!text?.trim())return '';const translated=[];for(const part of splitForTranslation(text)){const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(part)}&langpair=en%7Czh-CN`;const response=await fetch(url);const data=await response.json();if(!response.ok||Number(data.responseStatus)!==200||!data.responseData?.translatedText)throw new Error(data.responseDetails||'Translation service unavailable');translated.push(data.responseData.translatedText)}return translated.join(' ')}
 
-async function autoTranslate(language, quiet = false) {
-  if (language === 'English') return;
-  if (!quiet) toast(`Translating to ${language}…`);
-  setTranslationStatus(language, 'Translating…');
-  try {
-    const response = await fetch('/api/translate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ language, texts: { title: info.title, description: info.description, registration: info.registration, audience: info.audience } })
-    });
-    const responseText = await response.text();
-    let data;
-    try { data = JSON.parse(responseText); } catch { throw new Error('Invalid translation response'); }
-    if (!response.ok || !data.translations) throw new Error(data.error || 'Translation failed');
-    info.translations = info.translations || {};
-    info.translations[language] = data.translations;
-    updateTranslationCard(language, data.translations);
-    if (!quiet) toast(`${language} translation is ready.`);
-  } catch (error) {
-    setTranslationStatus(language, 'Translation failed');
-    if (!quiet) toast(`Translation unavailable: ${error.message}`);
-  }
-}
+async function translateFromBrowser(){const fields=['title','description','registration','audience'],translations={};for(const field of fields)translations[field]=await translateDirect(info[field]);return translations}
+
+async function autoTranslate(language,quiet=false){if(language!=='Chinese')return true;if(!quiet)toast('Translating to Chinese…');translationStatus('Translating…');try{let translations;try{const response=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:'Chinese',texts:{title:info.title,description:info.description,registration:info.registration,audience:info.audience}})});const text=await response.text(),data=JSON.parse(text);if(!response.ok||!data.translations)throw new Error(data.error||'Local translation unavailable');translations=data.translations}catch{translations=await translateFromBrowser()}info.translations=info.translations||{};info.translations.Chinese=translations;updateTranslationCard(translations);if(!quiet)toast('Chinese translation is ready.');return true}catch(error){translationStatus('Translation failed');if(!quiet)toast(`Translation unavailable: ${error.message}`);return false}}

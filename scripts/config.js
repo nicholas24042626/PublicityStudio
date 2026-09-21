@@ -31,7 +31,7 @@ const translationLabels = {
 function blank() {
   return {
     title: '', description: '', date: '', startTime: '', endTime: '', venue: '',
-    audience: '', registration: '', contact: '', slots: '', category: 'Community',
+    audience: '', registration: '', slots: '', category: 'Community',
     languages: ['English'], translations: {}
   };
 }

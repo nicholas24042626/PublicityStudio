@@ -7,6 +7,7 @@ A focused, dependency-free HTML, CSS and JavaScript workflow for entering progra
 ```text
 index.html                 Browser entry point
 app.js                     UI views, navigation, project workflow and poster editor
+assets/seen-logo.png       Standard SEEN logo used on every poster
 scripts/
   config.js                Shared labels, defaults and template configuration
   translation.js           Automatic translation client
@@ -27,7 +28,7 @@ To use a localhost address, double-click `Start Website.bat` (or run `Start-Webs
 
 ## Content generation and languages
 
-The application uses its built-in local content generator and requires no API key. Selecting Chinese, Malay or Tamil automatically translates the programme wording through the MyMemory translation service. Internet access is required for translation. Translations remain editable, are saved with the project, and appear together on multilingual posters.
+The application uses its built-in local content generator and requires no API key. Selecting Chinese automatically translates the programme wording through the MyMemory translation service. Internet access is required for translation. The browser uses the local translation proxy when available and falls back to the public translation endpoint on static hosting. Translations remain editable, are saved with the project, and appear together on bilingual posters.
 
 ## Development
 
