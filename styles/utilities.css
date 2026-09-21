@@ -1,0 +1,37 @@
+.static-icon {
+  width: 20px;
+  text-align: center;
+  font-style: normal;
+}
+
+.hidden { display: none !important; }
+.static-nav button { font-weight: 500; }
+.project-actions { display: flex; gap: 5px; }
+
+.notice {
+  margin-bottom: 16px;
+  padding: 10px 13px;
+  border-radius: 7px;
+  color: #72520b;
+  background: #fff4d8;
+}
+
+.standalone-app .app-content { margin-left: 0; }
+.standalone-app .create-page { padding-top: 28px; }
+.standalone-header {
+  height: 68px;
+  padding: 0 clamp(20px, 4vw, 60px);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: white;
+  background: #123e36;
+  box-shadow: 0 1px 12px rgba(16, 57, 48, .15);
+}
+.standalone-header > div:last-child { display: grid; }
+.standalone-header b { font: 700 17px Manrope, sans-serif; }
+.standalone-header span { margin-top: 2px; color: #adc9c0; font-size: 9px; letter-spacing: 1.8px; }
+.standalone-app .create-head .back-btn,
+.standalone-app .save-draft,
+.standalone-app [data-save] { display: none !important; }
+.standalone-app .create-head { justify-content: flex-start; }
