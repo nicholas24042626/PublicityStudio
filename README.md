@@ -18,6 +18,9 @@ styles/
 src/styles.css             Main component and responsive styles
 Start-Localhost.ps1        Local static server and translation proxy
 Start Website.bat          One-click Windows launcher
+server.py                  Secure Render server and OpenAI artwork endpoint
+render.yaml                Render Web Service configuration
+friend-integration/        Handoff code for the scheduling website developer
 ```
 
 ## Open without installing anything
@@ -33,6 +36,12 @@ The application uses its built-in local content generator and requires no API ke
 ## Development
 
 No package installation or build command is required. Edit the HTML, JavaScript and CSS files directly, then refresh the localhost page.
+
+## Scheduling website integration
+
+See `friend-integration/README.md`. The schedule website creates a short-lived signed link through a server-to-server request. Publicity Studio imports the schedule and can generate text-free artwork through OpenAI while retaining exact, accessible poster text in the local layout.
+
+For deployment with AI generation, deploy this repository as a Render **Web Service** using `render.yaml`, not as a Static Site. Configure `OPENAI_API_KEY`; Render generates the signing and integration secrets. Copy the integration secret into the schedule website's server environment.
 
 ## Privacy
 
